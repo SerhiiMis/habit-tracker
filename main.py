@@ -1,5 +1,32 @@
+import json
+from datetime import datetime
+import os
+
+DATA_FILE = 'habits.json'
+DATE_FORMAT = "%Y-%m-%d"
+
+def load_data():
+    if not os.path.exists(DATA_FILE):
+        return {}
+    try:
+        with open(DATA_FILE, 'r') as f:
+            return json.load(f)
+    except (IOError, json.JSONDecodeError):
+        print(f"Warning: Could not read or decode {DATA_FILE}. Starting with an empty data (habit list).")
+
+def save_data(habits):
+    try:
+        with open(DATA_FILE, 'w') as f:
+            json.dump(habits, f, indent=4)
+    except IOError:
+        print(f"Error: Could not save data to {DATA_FILE}.")
+
+
+
+
 def main():
     print("--- Welcome to the Habit Tracker App ---")
+    habits = load_data()
 
     while True:
         print("\nChoose an action:")
@@ -25,4 +52,7 @@ def main():
 
         save_data(habits)
 
+
+if __name__ == "__main__":
+    main()
 
