@@ -21,8 +21,54 @@ def save_data(habits):
     except IOError:
         print(f"Error: Could not save data to {DATA_FILE}.")
 
+def add_habit(habits):
+    name = input("Enter the name of the new habit: ").strip()
+    if not name:
+        print("Habit name cannot be empty.")
+        return
+    
+    if name in habits:
+        print("Habit '{name}' already exists.")
+        return
+    
+    today = datetime.now().strftime(DATE_FORMAT)
+    habits[name] = {
+        'created': today,
+        'lod_dates': [], 
+        'last_completed': 'Never'
+    }
+    print(f"Habit '{name}' created on {today}.")
 
+def log_completion(habits):
+    if not habits:
+        print("No habits to log. Please add a new habit first.")
+        return
+    
+    print("\nAvailable habits:")
+    habit_names = list(habits.keys())
+    for i, name in enumerate(habit_names):
+        print(f"{i + 1}. {name}")
 
+    try:
+        choice = input("Enter the number of the habit to log: ").strip()
+        index = int(choice) - 1
+        habit_name = habit_names[index]
+    except (ValueError, IndexError):
+        print("Invalid selection. Please enter a valid number.")
+        return
+    
+    today = datetime.now().strftime(DATE_FORMAT)
+    habit = habits[habit_name]
+    log_dates = habit.get('log_dates', [])
+    
+    if today in log_dates:
+        print(f"Habit '{habit_name}' already logged for today ({today}).")
+        return
+
+    log_dates.append(today)
+    habit['log_dates'] = log_dates
+    habit['last_completed'] = today
+    print(f"Successfully logged completion for '{habit_name}' on {today}.")
 
 def main():
     print("--- Welcome to the Habit Tracker App ---")
