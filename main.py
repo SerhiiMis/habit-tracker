@@ -74,7 +74,32 @@ def log_completion(habits):
     habit['last_completed'] = today
     print(f"Successfully logged completion for '{habit_name}' on {today}.")
 
+def delete_habit(habits):
+    if not habits:
+        print("No habits to delete.")
+        return
 
+    print("\nAvailable Habits to Delete:")
+    habit_names = list(habits.keys())
+    for i, name in enumerate(habit_names):
+        print(f" {i + 1}. {name}")
+
+    try: 
+        choice = input("Enter the number of the habit to DELETE: ").strip()
+        index = int(choice) - 1
+        habit_name = habit_names[index]
+    except (ValueError, IndexError):
+        print("Invalid selection. Please enter a valid number.")
+        return
+    
+    confirmation = input(f"Are you sure you want to permanently delete '{habit_name}'? (y/n): ").strip().lower()
+
+    if confirmation == 'y':
+        del habits[habit_name]
+        print(f"Habit '{habit_name}' has been permanently deleted.")
+    else:
+        print(f"Deletion of '{habit_name} cancelled.")
+    
 def show_status(habits):
     if not habits:
         print("\n--- Habits Status ---")
@@ -101,7 +126,8 @@ def main():
         print("1. Add a new habit")
         print("2. Log completion for a habit")
         print("3. View habits")
-        print("4. Exit")
+        print("4. Delete a habit")
+        print("5. Exit and Save")
 
         choice = input("Enter your choice (1-4): ").strip()
 
@@ -112,11 +138,13 @@ def main():
         elif choice == '3':
             show_status(habits)
         elif choice == '4':
+            delete_habit(habits)
+        elif choice == '5':
             save_data(habits)
             print("Habits saved. Goodbye!")
             break
         else:
-            print("Invslid choice. Please enter 1, 2, 3, or 4.")
+            print("Invslid choice. Please enter 1, 2, 3, 4, or 5.")
 
         save_data(habits)
 
